@@ -2,6 +2,7 @@
 
 **eWAY driver for the Omnipay PHP payment processing library**
 
+[![CI](https://github.com/thephpleague/omnipay-eway/actions/workflows/ci.yml/badge.svg)](https://github.com/thephpleague/omnipay-eway/actions/workflows/ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/omnipay/eway/version.png)](https://packagist.org/packages/omnipay/eway)
 [![Total Downloads](https://poser.pugx.org/omnipay/eway/d/total.png)](https://packagist.org/packages/omnipay/eway)
 
