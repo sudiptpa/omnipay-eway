@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class RapidDirectAuthorizeRequestTest extends TestCase
 {
+    protected $request;
+
     protected function setUp(): void
     {
         parent::setUp();

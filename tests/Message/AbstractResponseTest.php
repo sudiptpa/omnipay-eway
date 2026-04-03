@@ -7,6 +7,8 @@ use Omnipay\Tests\TestCase;
 
 class AbstractResponseTest extends TestCase
 {
+    protected $response;
+
     protected function setUp(): void
     {
         parent::setUp();

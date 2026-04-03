@@ -210,7 +210,12 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
 
     public function getMessage()
     {
-        $codes = explode(',', $this->getCode());
+        $code = $this->getCode();
+        if ($code === null || $code === '') {
+            return null;
+        }
+
+        $codes = explode(',', $code);
         $messages = array();
 
         foreach ($codes as $code) {
