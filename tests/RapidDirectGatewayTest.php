@@ -6,7 +6,7 @@ use Omnipay\Tests\GatewayTestCase;
 
 class RapidDirectGatewayTest extends GatewayTestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,6 +35,14 @@ class RapidDirectGatewayTest extends GatewayTestCase
 
         $this->assertInstanceOf('Omnipay\Eway\Message\RapidCaptureRequest', $request);
         $this->assertSame('10.00', $request->getAmount());
+    }
+
+    public function testFetchTransaction()
+    {
+        $request = $this->gateway->fetchTransaction(array('transactionReference' => '30430780'));
+
+        $this->assertInstanceOf('Omnipay\Eway\Message\RapidFetchTransactionRequest', $request);
+        $this->assertSame('30430780', $request->getTransactionReference());
     }
 
     public function testCreateCard()

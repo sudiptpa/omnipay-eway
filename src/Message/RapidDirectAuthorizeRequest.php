@@ -87,6 +87,6 @@ class RapidDirectAuthorizeRequest extends RapidDirectAbstractRequest
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase().'/DirectPayment.json';
+        return $this->getEndpointBase() . '/Transaction';
     }
 }

@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidCompletePurchaseRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidCompletePurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',

@@ -51,22 +51,23 @@ class RefundRequest extends AbstractRequest
             $data['Items'] = $this->getItemData();
         }
 
+        $options = $this->getOptionsData();
+        if ($options) {
+            $data['Options'] = $options;
+        }
+
         return $data;
     }
 
     public function sendData($data)
     {
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword())
-        ];
+        $httpResponse = $this->sendJsonRequest('POST', $this->getEndpoint(), $data);
 
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), $headers, json_encode($data));
-
-        return $this->response = new RefundResponse($this, json_decode((string) $httpResponse->getBody(), true));
+        return $this->response = new RefundResponse($this, $this->decodeJsonResponse($httpResponse));
     }
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase() . '/DirectRefund.json';
+        return $this->getEndpointBase() . '/Transaction/' . rawurlencode($this->getTransactionReference()) . '/Refund';
     }
 }

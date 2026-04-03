@@ -7,8 +7,10 @@ use Omnipay\Tests\TestCase;
 
 class AbstractRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = m::mock('\Omnipay\Eway\Message\AbstractRequest')->makePartial();
         $this->request->initialize();
     }
@@ -23,6 +25,12 @@ class AbstractRequestTest extends TestCase
     {
         $this->assertSame($this->request, $this->request->setPassword('secret'));
         $this->assertSame('secret', $this->request->getPassword());
+    }
+
+    public function testApiVersion()
+    {
+        $this->assertSame($this->request, $this->request->setApiVersion('47'));
+        $this->assertSame('47', $this->request->getApiVersion());
     }
 
     public function testPartnerId()
@@ -47,6 +55,44 @@ class AbstractRequestTest extends TestCase
     {
         $this->assertSame($this->request, $this->request->setInvoiceReference('INV-123'));
         $this->assertSame('INV-123', $this->request->getInvoiceReference());
+    }
+
+    public function testAccessCode()
+    {
+        $this->assertSame($this->request, $this->request->setAccessCode('ABC123'));
+        $this->assertSame('ABC123', $this->request->getAccessCode());
+    }
+
+    public function testDeviceId()
+    {
+        $this->assertSame($this->request, $this->request->setDeviceId('device-123'));
+        $this->assertSame('device-123', $this->request->getDeviceId());
+    }
+
+    public function testCapture()
+    {
+        $this->assertSame($this->request, $this->request->setCapture(true));
+        $this->assertTrue($this->request->getCapture());
+    }
+
+    public function testSaveCustomer()
+    {
+        $this->assertSame($this->request, $this->request->setSaveCustomer(true));
+        $this->assertTrue($this->request->getSaveCustomer());
+    }
+
+    public function testOptions()
+    {
+        $options = ['Option1', ['Value' => 'Option2']];
+        $this->assertSame($this->request, $this->request->setOptions($options));
+        $this->assertSame($options, $this->request->getOptions());
+    }
+
+    public function testPaymentInstrument()
+    {
+        $instrument = ['PaymentType' => 'ApplePay'];
+        $this->assertSame($this->request, $this->request->setPaymentInstrument($instrument));
+        $this->assertSame($instrument, $this->request->getPaymentInstrument());
     }
 
     public function testGetItemData()

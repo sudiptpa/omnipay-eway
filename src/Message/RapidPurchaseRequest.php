@@ -22,6 +22,12 @@ class RapidPurchaseRequest extends AbstractRequest
         $data['Method'] = 'ProcessPayment';
         $data['TransactionType'] = $this->getTransactionType();
         $data['RedirectUrl'] = $this->getReturnUrl();
+        if ($this->getCapture() !== null) {
+            $data['Capture'] = (bool) $this->getCapture();
+        }
+        if ($this->getSaveCustomer() !== null) {
+            $data['SaveCustomer'] = (bool) $this->getSaveCustomer();
+        }
 
         $data['Payment'] = [];
         $data['Payment']['TotalAmount'] = $this->getAmountInteger();
@@ -34,22 +40,23 @@ class RapidPurchaseRequest extends AbstractRequest
             $data['Items'] = $this->getItemData();
         }
 
+        $options = $this->getOptionsData();
+        if ($options) {
+            $data['Options'] = $options;
+        }
+
         return $data;
     }
 
     public function sendData($data)
     {
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword())
-        ];
+        $httpResponse = $this->sendJsonRequest('POST', $this->getEndpoint(), $data);
 
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), $headers, json_encode($data));
-
-        return $this->response = new RapidResponse($this, json_decode((string) $httpResponse->getBody(), true));
+        return $this->response = new RapidResponse($this, $this->decodeJsonResponse($httpResponse));
     }
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase() . '/CreateAccessCode.json';
+        return $this->getEndpointBase() . '/AccessCodes';
     }
 }

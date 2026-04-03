@@ -8,8 +8,10 @@ use Omnipay\Tests\TestCase;
 class AbstractResponseTest extends TestCase
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->response = m::mock('\Omnipay\Eway\Message\AbstractResponse')->makePartial();
     }
 

@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidSharedPurchaseRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidSharedPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',
@@ -30,6 +32,10 @@ class RapidSharedPurchaseRequestTest extends TestCase
             'description' => 'new car',
             'currency' => 'AUD',
             'invoiceReference' => 'INV-123',
+            'footerText' => 'Footer Text',
+            'capture' => false,
+            'saveCustomer' => true,
+            'options' => ['Option1'],
             'clientIp' => '127.0.0.1',
             'returnUrl' => 'https://www.example.com/return',
             'card' => [
@@ -51,6 +57,10 @@ class RapidSharedPurchaseRequestTest extends TestCase
         $this->assertSame('Purchase', $data['TransactionType']);
         $this->assertSame('NextDay', $data['ShippingMethod']);
         $this->assertSame('https://www.example.com/return', $data['RedirectUrl']);
+        $this->assertSame('Footer Text', $data['FooterText']);
+        $this->assertFalse($data['Capture']);
+        $this->assertTrue($data['SaveCustomer']);
+        $this->assertSame('Option1', $data['Options'][0]['Value']);
         $this->assertSame(1000, $data['Payment']['TotalAmount']);
         $this->assertSame('999', $data['Payment']['InvoiceNumber']);
         $this->assertSame('new car', $data['Payment']['InvoiceDescription']);
@@ -146,6 +156,12 @@ class RapidSharedPurchaseRequestTest extends TestCase
     {
         $this->assertSame($this->request, $this->request->setHeaderText('Header Text'));
         $this->assertSame('Header Text', $this->request->getHeaderText());
+    }
+
+    public function testFooterText()
+    {
+        $this->assertSame($this->request, $this->request->setFooterText('Footer Text'));
+        $this->assertSame('Footer Text', $this->request->getFooterText());
     }
 
     public function testLanguage()

@@ -22,11 +22,18 @@ class RapidSharedPurchaseRequest extends AbstractRequest
         $data['Method'] = 'ProcessPayment';
         $data['RedirectUrl'] = $this->getReturnUrl();
         $data['TransactionType'] = $this->getTransactionType();
+        if ($this->getCapture() !== null) {
+            $data['Capture'] = (bool) $this->getCapture();
+        }
+        if ($this->getSaveCustomer() !== null) {
+            $data['SaveCustomer'] = (bool) $this->getSaveCustomer();
+        }
 
         // Shared page parameters (optional)
         $data['CancelUrl'] = $this->getCancelUrl();
         $data['LogoUrl'] = $this->getLogoUrl();
         $data['HeaderText'] = $this->getHeaderText();
+        $data['FooterText'] = $this->getFooterText();
         $data['Language'] = $this->getLanguage();
         $data['CustomerReadOnly'] = $this->getCustomerReadOnly();
         $data['CustomView'] = $this->getCustomView();
@@ -44,23 +51,24 @@ class RapidSharedPurchaseRequest extends AbstractRequest
             $data['Items'] = $this->getItemData();
         }
 
+        $options = $this->getOptionsData();
+        if ($options) {
+            $data['Options'] = $options;
+        }
+
         return $data;
     }
 
     public function sendData($data)
     {
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword())
-        ];
+        $httpResponse = $this->sendJsonRequest('POST', $this->getEndpoint(), $data);
 
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), $headers, json_encode($data));
-
-        return $this->response = new RapidSharedResponse($this, json_decode((string) $httpResponse->getBody(), true));
+        return $this->response = new RapidSharedResponse($this, $this->decodeJsonResponse($httpResponse));
     }
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase() . '/CreateAccessCodeShared.json';
+        return $this->getEndpointBase() . '/AccessCodesShared';
     }
 
     public function getCancelUrl()
@@ -91,6 +99,16 @@ class RapidSharedPurchaseRequest extends AbstractRequest
     public function setHeaderText($value)
     {
         return $this->setParameter('headerText', $value);
+    }
+
+    public function getFooterText()
+    {
+        return $this->getParameter('footerText');
+    }
+
+    public function setFooterText($value)
+    {
+        return $this->setParameter('footerText', $value);
     }
 
     public function getLanguage()

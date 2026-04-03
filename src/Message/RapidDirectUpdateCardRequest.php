@@ -64,9 +64,6 @@ class RapidDirectUpdateCardRequest extends RapidDirectAbstractRequest
 
         $this->validate('cardReference');
 
-        $data['Payment'] = [];
-        $data['Payment']['TotalAmount'] = 0;
-
         $data['Customer']['TokenCustomerID'] = $this->getCardReference();
 
         $data['Method'] = 'UpdateTokenCustomer';
@@ -76,20 +73,16 @@ class RapidDirectUpdateCardRequest extends RapidDirectAbstractRequest
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase() . '/DirectPayment.json';
+        return $this->getEndpointBase() . '/Transaction';
     }
 
     public function sendData($data)
     {
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword())
-        ];
-
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), $headers, json_encode($data));
+        $httpResponse = $this->sendJsonRequest('POST', $this->getEndpoint(), $data);
 
         return $this->response = new RapidDirectCreateCardResponse(
             $this,
-            json_decode((string) $httpResponse->getBody(), true)
+            $this->decodeJsonResponse($httpResponse)
         );
     }
 }

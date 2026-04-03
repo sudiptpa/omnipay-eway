@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidSharedCreateCardRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidSharedCreateCardRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',
@@ -35,7 +37,7 @@ class RapidSharedCreateCardRequestTest extends TestCase
         $this->assertSame('Purchase', $data['TransactionType']);
         $this->assertSame('CreateTokenCustomer', $data['Method']);
         $this->assertSame('https://www.example.com/return', $data['RedirectUrl']);
-        $this->assertSame(0, $data['Payment']['TotalAmount']);
+        $this->assertArrayNotHasKey('Payment', $data);
         $this->assertSame('Mr', $data['Customer']['Title']);
         $this->assertSame('Patrick', $data['Customer']['FirstName']);
         $this->assertSame('Collison', $data['Customer']['LastName']);

@@ -36,6 +36,7 @@ class RapidSharedGateway extends AbstractGateway
         return [
             'apiKey' => '',
             'password' => '',
+            'apiVersion' => null,
             'testMode' => false,
         ];
     }
@@ -60,12 +61,23 @@ class RapidSharedGateway extends AbstractGateway
         return $this->setParameter('password', $value);
     }
 
+    public function getApiVersion()
+    {
+        return $this->getParameter('apiVersion');
+    }
+
+    public function setApiVersion($value)
+    {
+        return $this->setParameter('apiVersion', $value);
+    }
+
     public function purchase(array $parameters = [])
     {
         if (!empty($parameters['cardTransactionType']) && $parameters['cardTransactionType'] === 'continuous') {
             $gateway = Omnipay::create('Eway_RapidDirect');
             $gateway->setApiKey($this->getApiKey());
             $gateway->setPassword($this->getPassword());
+            $gateway->setApiVersion($this->getApiVersion());
             $gateway->setTestMode($this->getTestMode());
             return $gateway->createRequest('\Omnipay\Eway\Message\RapidDirectPurchaseRequest', $parameters);
         }
@@ -75,6 +87,11 @@ class RapidSharedGateway extends AbstractGateway
     public function completePurchase(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\Eway\Message\RapidCompletePurchaseRequest', $parameters);
+    }
+
+    public function fetchTransaction(array $parameters = [])
+    {
+        return $this->createRequest('\Omnipay\Eway\Message\RapidFetchTransactionRequest', $parameters);
     }
 
     public function refund(array $parameters = [])

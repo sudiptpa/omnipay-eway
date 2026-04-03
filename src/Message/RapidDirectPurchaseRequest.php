@@ -81,6 +81,12 @@ class RapidDirectPurchaseRequest extends RapidDirectAbstractRequest
         $data['Payment']['InvoiceDescription'] = $this->getDescription();
         $data['Payment']['CurrencyCode'] = $this->getCurrency();
         $data['Payment']['InvoiceReference'] = $this->getInvoiceReference();
+        if ($this->getCapture() !== null) {
+            $data['Capture'] = (bool) $this->getCapture();
+        }
+        if ($this->getSaveCustomer() !== null) {
+            $data['SaveCustomer'] = (bool) $this->getSaveCustomer();
+        }
 
         if (empty($data['Customer']['CardDetails']['CVN']) && $this->getCardReference()) {
             // We have a token and card is not present so treat as MOTO.
@@ -103,6 +109,6 @@ class RapidDirectPurchaseRequest extends RapidDirectAbstractRequest
      */
     protected function getEndpoint()
     {
-        return $this->getEndpointBase().'/DirectPayment.json';
+        return $this->getEndpointBase() . '/Transaction';
     }
 }

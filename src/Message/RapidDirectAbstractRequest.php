@@ -14,6 +14,16 @@ namespace Omnipay\Eway\Message;
  */
 abstract class RapidDirectAbstractRequest extends AbstractRequest
 {
+    public function getSecuredCardData()
+    {
+        return $this->getParameter('securedCardData');
+    }
+
+    public function setSecuredCardData($value)
+    {
+        return $this->setParameter('securedCardData', $value);
+    }
+
     public function getEncryptedCardNumber()
     {
         return $this->getParameter('encryptedCardNumber');
@@ -55,8 +65,14 @@ abstract class RapidDirectAbstractRequest extends AbstractRequest
 
         if ($this->getCardReference()) {
             $data['Customer']['TokenCustomerID'] = $this->getCardReference();
+        } elseif ($this->getSecuredCardData() || $this->getPaymentInstrument()) {
+            // Secure Fields, Secure Panel, or wallet-based direct requests do not require a CreditCard object.
         } else {
             $this->validate('card');
+        }
+
+        if ($this->getSecuredCardData()) {
+            $data['SecuredCardData'] = $this->getSecuredCardData();
         }
 
         if ($this->getCard()) {
@@ -96,17 +112,18 @@ abstract class RapidDirectAbstractRequest extends AbstractRequest
             $data['Items'] = $this->getItemData();
         }
 
+        $options = $this->getOptionsData();
+        if ($options) {
+            $data['Options'] = $options;
+        }
+
         return $data;
     }
 
     public function sendData($data)
     {
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword())
-        ];
+        $httpResponse = $this->sendJsonRequest('POST', $this->getEndpoint(), $data);
 
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), $headers, json_encode($data));
-
-        return $this->response = new RapidResponse($this, json_decode((string) $httpResponse->getBody(), true));
+        return $this->response = new RapidResponse($this, $this->decodeJsonResponse($httpResponse));
     }
 }

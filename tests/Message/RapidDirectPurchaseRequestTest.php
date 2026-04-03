@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidDirectPurchaseRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidDirectPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',
@@ -38,6 +40,9 @@ class RapidDirectPurchaseRequestTest extends TestCase
             'description' => 'new car',
             'currency' => 'AUD',
             'invoiceReference' => 'INV-123',
+            'capture' => false,
+            'saveCustomer' => true,
+            'options' => ['Option1'],
             'clientIp' => '127.0.0.1',
             'card' => [
                 'firstName' => 'John',
@@ -65,6 +70,9 @@ class RapidDirectPurchaseRequestTest extends TestCase
         $this->assertSame('1234', $data['PartnerID']);
         $this->assertSame('Purchase', $data['TransactionType']);
         $this->assertSame('NextDay', $data['ShippingMethod']);
+        $this->assertFalse($data['Capture']);
+        $this->assertTrue($data['SaveCustomer']);
+        $this->assertSame('Option1', $data['Options'][0]['Value']);
         $this->assertSame(1000, $data['Payment']['TotalAmount']);
         $this->assertSame('999', $data['Payment']['InvoiceNumber']);
         $this->assertSame('new car', $data['Payment']['InvoiceDescription']);
@@ -149,6 +157,47 @@ class RapidDirectPurchaseRequestTest extends TestCase
         $this->assertSame('01', $data['Customer']['CardDetails']['StartMonth']);
         $this->assertSame('13', $data['Customer']['CardDetails']['StartYear']);
         $this->assertSame('1', $data['Customer']['CardDetails']['IssueNumber']);
+    }
+
+    public function testGetDataWithSecuredCardData()
+    {
+        $this->request->initialize([
+            'apiKey' => 'my api key',
+            'password' => 'secret',
+            'amount' => '10.00',
+            'currency' => 'AUD',
+            'transactionType' => 'Purchase',
+            'securedCardData' => '44DD7jYYyRgaQnVibOAsYbbFIYmSXbS6hmTxosAhG6CK1biw=',
+        ]);
+
+        $data = $this->request->getData();
+
+        $this->assertSame('ProcessPayment', $data['Method']);
+        $this->assertSame('44DD7jYYyRgaQnVibOAsYbbFIYmSXbS6hmTxosAhG6CK1biw=', $data['SecuredCardData']);
+        $this->assertArrayNotHasKey('CardDetails', $data['Customer']);
+    }
+
+    public function testGetDataWithPaymentInstrument()
+    {
+        $paymentInstrument = [
+            'PaymentType' => 'ApplePay',
+            'WalletDetails' => [
+                'Token' => 'wallet-token',
+            ],
+        ];
+
+        $this->request->initialize([
+            'apiKey' => 'my api key',
+            'password' => 'secret',
+            'amount' => '10.00',
+            'currency' => 'AUD',
+            'transactionType' => 'Purchase',
+            'paymentInstrument' => $paymentInstrument,
+        ]);
+
+        $data = $this->request->getData();
+
+        $this->assertSame($paymentInstrument, $data['PaymentInstrument']);
     }
 
     public function testGetDataWithItems()

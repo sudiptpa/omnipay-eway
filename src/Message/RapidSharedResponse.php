@@ -44,5 +44,11 @@ class RapidSharedResponse extends AbstractResponse implements RedirectResponseIn
         if (isset($this->data['Customer']['TokenCustomerID'])) {
             return $this->data['Customer']['TokenCustomerID'];
         }
+
+        if (isset($this->data['TokenCustomerID'])) {
+            return $this->data['TokenCustomerID'];
+        }
+
+        return null;
     }
 }

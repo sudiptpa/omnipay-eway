@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidPurchaseRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',
@@ -30,6 +32,10 @@ class RapidPurchaseRequestTest extends TestCase
             'description' => 'new car',
             'currency' => 'AUD',
             'invoiceReference' => 'INV-123',
+            'deviceId' => 'device-123',
+            'capture' => false,
+            'saveCustomer' => true,
+            'options' => ['Option1', ['Value' => 'Option2']],
             'clientIp' => '127.0.0.1',
             'returnUrl' => 'https://www.example.com/return',
             'card' => [
@@ -50,6 +56,11 @@ class RapidPurchaseRequestTest extends TestCase
         $this->assertSame('1234', $data['PartnerID']);
         $this->assertSame('Purchase', $data['TransactionType']);
         $this->assertSame('NextDay', $data['ShippingMethod']);
+        $this->assertSame('device-123', $data['DeviceID']);
+        $this->assertFalse($data['Capture']);
+        $this->assertTrue($data['SaveCustomer']);
+        $this->assertSame('Option1', $data['Options'][0]['Value']);
+        $this->assertSame('Option2', $data['Options'][1]['Value']);
         $this->assertSame('https://www.example.com/return', $data['RedirectUrl']);
         $this->assertSame(1000, $data['Payment']['TotalAmount']);
         $this->assertSame('999', $data['Payment']['InvoiceNumber']);
@@ -82,7 +93,7 @@ class RapidPurchaseRequestTest extends TestCase
         ]);
 
         $this->request->setItems([
-            ['name' => 'Floppy Disk', 'description' => 'MS-DOS', 'quantity' => 2, 'price' => 10],
+            ['name' => 'Floppy Disk', 'description' => 'MS-DOS', 'quantity' => 2, 'price' => 10, 'tax' => 1, 'total' => 22],
             ['name' => 'CD-ROM', 'description' => 'Windows 95', 'quantity' => 1, 'price' => 40],
         ]);
 
@@ -92,6 +103,8 @@ class RapidPurchaseRequestTest extends TestCase
         $this->assertSame('MS-DOS', $data['Items'][0]['Description']);
         $this->assertSame('2', $data['Items'][0]['Quantity']);
         $this->assertSame('1000', $data['Items'][0]['UnitCost']);
+        $this->assertSame('100', $data['Items'][0]['Tax']);
+        $this->assertSame('2200', $data['Items'][0]['Total']);
 
         $this->assertSame('CD-ROM', $data['Items'][1]['SKU']);
         $this->assertSame('Windows 95', $data['Items'][1]['Description']);

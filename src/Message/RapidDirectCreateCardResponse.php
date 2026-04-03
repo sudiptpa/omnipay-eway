@@ -5,8 +5,6 @@
 
 namespace Omnipay\Eway\Message;
 
-use Omnipay\SecurePay\Message\DirectPostCompletePurchaseResponse;
-
 /**
  * eWAY Rapid Direct Create Card Response
  *
@@ -16,13 +14,13 @@ use Omnipay\SecurePay\Message\DirectPostCompletePurchaseResponse;
  */
 class RapidDirectCreateCardResponse extends RapidResponse
 {
-  /**
-   * @var DirectPostCompletePurchaseResponse
-   */
+    /**
+     * @var RapidResponse|null
+     */
     protected $purchaseResponse;
 
     /**
-     * @return DirectPostCompletePurchaseResponse
+     * @return RapidResponse|null
      */
     public function getPurchaseResponse()
     {
@@ -30,7 +28,7 @@ class RapidDirectCreateCardResponse extends RapidResponse
     }
 
     /**
-     * @param DirectPostCompletePurchaseResponse $purchaseResponse
+     * @param RapidResponse $purchaseResponse
      */
     public function setPurchaseResponse($purchaseResponse)
     {
@@ -40,9 +38,11 @@ class RapidDirectCreateCardResponse extends RapidResponse
     public function isSuccessful()
     {
         if (!$this->getPurchaseResponse()) {
-            return $this->data['ResponseMessage'] == 'A2000';
-        } else {
-            return ($this->data['ResponseMessage'] == 'A2000' && $this->purchaseResponse->isSuccessful());
+            return isset($this->data['ResponseMessage']) && $this->data['ResponseMessage'] === 'A2000';
         }
+
+        return isset($this->data['ResponseMessage'])
+            && $this->data['ResponseMessage'] === 'A2000'
+            && $this->purchaseResponse->isSuccessful();
     }
 }

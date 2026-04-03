@@ -14,24 +14,6 @@ namespace Omnipay\Eway\Message;
  */
 class RapidSharedCreateCardRequest extends RapidSharedPurchaseRequest
 {
-    protected $action;
-
-    /**
-     * @return string|NULL
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @param string $action
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-    }
-
     public function getData()
     {
         $this->validate('returnUrl');
@@ -45,13 +27,15 @@ class RapidSharedCreateCardRequest extends RapidSharedPurchaseRequest
         $data['CancelUrl'] = $this->getCancelUrl();
         $data['LogoUrl'] = $this->getLogoUrl();
         $data['HeaderText'] = $this->getHeaderText();
+        $data['FooterText'] = $this->getFooterText();
         $data['Language'] = $this->getLanguage();
         $data['CustomerReadOnly'] = $this->getCustomerReadOnly();
         $data['CustomView'] = $this->getCustomView();
-
-        $data['Payment'] = array();
+        $data['VerifyCustomerPhone'] = $this->getVerifyCustomerPhone();
+        $data['VerifyCustomerEmail'] = $this->getVerifyCustomerEmail();
 
         if ($this->getAction() === 'Purchase') {
+            $data['Payment'] = [];
             $data['Payment']['TotalAmount'] = (int) $this->getAmountInteger();
             $data['Payment']['InvoiceNumber'] = $this->getTransactionId();
             $data['Payment']['InvoiceDescription'] = $this->getDescription();
@@ -60,7 +44,6 @@ class RapidSharedCreateCardRequest extends RapidSharedPurchaseRequest
             $data['Method'] = 'TokenPayment';
         } else {
             $data['Method'] = 'CreateTokenCustomer';
-            $data['Payment']['TotalAmount'] = 0;
         }
 
         return $data;

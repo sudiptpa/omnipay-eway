@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Cache-control: no-cache="set-cookie"
+Content-Type: application/json; charset=utf-8
+Date: Fri, 03 Apr 2026 00:00:00 GMT
+X-EWAY-VIA: api-au.sandbox.ewaypayments.com/
+X-EWAY-VIA-FROM: http://api.sandbox.ewaypayments.com/Transaction/30430780
+X-EWAY-VIA-HTTP-METHOD: GET
+X-EWAY-VIA-HTTP-STATUS: 200
+X-EWAY-VIA-TO: http://api-au.sandbox.ewaypayments.com/Transaction/30430780
+X-Powered-By: eWAY
+Content-Length: 1314
+Connection: keep-alive
+
+{"Transactions":[{"TransactionDateTime":"2021-10-27T15:55:30+11:00","FraudAction":"","TransactionCaptured":true,"TransactionType":1,"CurrencyCode":"036","Source":0,"MaxRefund":100,"OriginalTransactionId":null,"Customer":{"CardDetails":{"CardType":"VI","Number":"444433XXXXXX1111","Name":"Valued Cardholder","ExpiryMonth":"06","ExpiryYear":"27","StartMonth":null,"StartYear":null,"IssueNumber":null},"TokenCustomerID":null,"Reference":"A12345","Title":"Mr.","FirstName":"John","LastName":"Doe","CompanyName":"WEB ACTIVE","JobDescription":"Developer","Street1":"15 Smith St","Street2":"","City":"Phillip","State":"ACT","PostalCode":"2602","Country":"au","Email":"","Phone":"1800 10 10 65","Mobile":"1800 10 10 65","Comments":"Some comments here","Fax":null,"Url":"http://www.yoursite.com"},"AuthorisationCode":"856563","ResponseCode":"00","ResponseMessage":"A2000","InvoiceNumber":"Inv 12345","InvoiceReference":"1234554321","InvoiceDescription":"Individual Invoice Description","TotalAmount":100,"TransactionID":30430780,"TransactionStatus":true,"TokenCustomerID":null,"BeagleScore":null,"Options":[{"Value":"Option1"},{"Value":"Option2"}],"Verification":{"CVN":0,"Address":0,"Email":0,"Mobile":0,"Phone":0},"BeagleVerification":{"Email":0,"Phone":0},"CustomerNote":null}],"Errors":null}

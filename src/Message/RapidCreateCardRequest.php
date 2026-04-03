@@ -23,12 +23,8 @@ class RapidCreateCardRequest extends RapidPurchaseRequest
         $data['TransactionType'] = 'Purchase';
         $data['RedirectUrl'] = $this->getReturnUrl();
 
-        // Shared page parameters (optional)
-        $data['CancelUrl'] = $this->getCancelUrl();
-
-        $data['Payment'] = array();
-
         if ($this->getAction() === 'Purchase') {
+            $data['Payment'] = [];
             $data['Payment']['TotalAmount'] = (int) $this->getAmountInteger();
             $data['Payment']['InvoiceNumber'] = $this->getTransactionId();
             $data['Payment']['InvoiceDescription'] = $this->getDescription();
@@ -37,7 +33,6 @@ class RapidCreateCardRequest extends RapidPurchaseRequest
             $data['Method'] = 'TokenPayment';
         } else {
             $data['Method'] = 'CreateTokenCustomer';
-            $data['Payment']['TotalAmount'] = 0;
         }
 
         return $data;

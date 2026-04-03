@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidDirectVoidRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidDirectVoidRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',

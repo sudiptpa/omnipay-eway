@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidDirectUpdateCardRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RapidDirectUpdateCardRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',

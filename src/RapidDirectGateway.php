@@ -98,6 +98,7 @@ class RapidDirectGateway extends AbstractGateway
         return [
             'apiKey' => '',
             'password' => '',
+            'apiVersion' => null,
             'testMode' => false,
         ];
     }
@@ -120,6 +121,16 @@ class RapidDirectGateway extends AbstractGateway
     public function setPassword($value)
     {
         return $this->setParameter('password', $value);
+    }
+
+    public function getApiVersion()
+    {
+        return $this->getParameter('apiVersion');
+    }
+
+    public function setApiVersion($value)
+    {
+        return $this->setParameter('apiVersion', $value);
     }
 
     /**
@@ -168,6 +179,11 @@ class RapidDirectGateway extends AbstractGateway
     public function capture(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\Eway\Message\RapidCaptureRequest', $parameters);
+    }
+
+    public function fetchTransaction(array $parameters = [])
+    {
+        return $this->createRequest('\Omnipay\Eway\Message\RapidFetchTransactionRequest', $parameters);
     }
 
     /**

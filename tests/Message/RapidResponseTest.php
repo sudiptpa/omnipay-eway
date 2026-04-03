@@ -21,4 +21,17 @@ class RapidResponseTest extends TestCase
 
         $this->assertSame('Invalid EWAY_CARDEXPIRYMONTH, Invalid EWAY_CARDEXPIRYYEAR', $response->getMessage());
     }
+
+    public function testGetTransactionIdFallsBackToPaymentInvoiceNumber()
+    {
+        $data = [
+            'Payment' => [
+                'InvoiceNumber' => 'INV-100',
+            ],
+        ];
+        $response = new RapidResponse($this->getMockRequest(), $data);
+
+        $this->assertSame('INV-100', $response->getTransactionId());
+        $this->assertSame('INV-100', $response->getInvoiceNumber());
+    }
 }

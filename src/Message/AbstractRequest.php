@@ -38,6 +38,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('password', $value);
     }
 
+    public function getApiVersion()
+    {
+        return $this->getParameter('apiVersion');
+    }
+
+    public function setApiVersion($value)
+    {
+        return $this->setParameter('apiVersion', $value);
+    }
+
     public function getPartnerId()
     {
         return $this->getParameter('partnerId');
@@ -101,10 +111,90 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $this->action = $action;
     }
 
+    public function getAccessCode()
+    {
+        return $this->getParameter('accessCode');
+    }
+
+    public function setAccessCode($value)
+    {
+        return $this->setParameter('accessCode', $value);
+    }
+
+    public function getDeviceId()
+    {
+        return $this->getParameter('deviceId');
+    }
+
+    public function setDeviceId($value)
+    {
+        return $this->setParameter('deviceId', $value);
+    }
+
+    public function getCapture()
+    {
+        return $this->getParameter('capture');
+    }
+
+    public function setCapture($value)
+    {
+        return $this->setParameter('capture', $value);
+    }
+
+    public function getSaveCustomer()
+    {
+        return $this->getParameter('saveCustomer');
+    }
+
+    public function setSaveCustomer($value)
+    {
+        return $this->setParameter('saveCustomer', $value);
+    }
+
+    public function getOptions()
+    {
+        return $this->getParameter('options');
+    }
+
+    public function setOptions($value)
+    {
+        return $this->setParameter('options', $value);
+    }
+
+    public function getCustomerData()
+    {
+        return $this->getParameter('customerData');
+    }
+
+    public function setCustomerData($value)
+    {
+        return $this->setParameter('customerData', $value);
+    }
+
+    public function getShippingAddressData()
+    {
+        return $this->getParameter('shippingAddressData');
+    }
+
+    public function setShippingAddressData($value)
+    {
+        return $this->setParameter('shippingAddressData', $value);
+    }
+
+    public function getPaymentInstrument()
+    {
+        return $this->getParameter('paymentInstrument');
+    }
+
+    public function setPaymentInstrument($value)
+    {
+        return $this->setParameter('paymentInstrument', $value);
+    }
+
     protected function getBaseData()
     {
         $data = array();
-        $data['DeviceID'] = 'https://github.com/adrianmacneil/omnipay';
+        $data['DeviceID'] = $this->getDeviceId() ?: 'omnipay/eway';
         $data['CustomerIP'] = $this->getClientIp();
         $data['PartnerID'] = $this->getPartnerId();
         $data['ShippingMethod'] = $this->getShippingMethod();
@@ -121,7 +211,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $data['Customer']['City'] = $card->getCity();
             $data['Customer']['State'] = $card->getState();
             $data['Customer']['PostalCode'] = $card->getPostCode();
-            $data['Customer']['Country'] = strtolower($card->getCountry());
+            $data['Customer']['Country'] = $this->normalizeCountryCode($card->getCountry());
             $data['Customer']['Email'] = $card->getEmail();
             $data['Customer']['Phone'] = $card->getPhone();
 
@@ -131,9 +221,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $data['ShippingAddress']['Street2'] = $card->getShippingAddress2();
             $data['ShippingAddress']['City'] = $card->getShippingCity();
             $data['ShippingAddress']['State'] = $card->getShippingState();
-            $data['ShippingAddress']['Country'] = strtolower($card->getShippingCountry());
+            $data['ShippingAddress']['Country'] = $this->normalizeCountryCode($card->getShippingCountry());
             $data['ShippingAddress']['PostalCode'] = $card->getShippingPostcode();
             $data['ShippingAddress']['Phone'] = $card->getShippingPhone();
+        }
+
+        if (is_array($this->getCustomerData())) {
+            $data['Customer'] = array_replace($data['Customer'], $this->getCustomerData());
+        }
+
+        if (isset($data['ShippingAddress']) && is_array($this->getShippingAddressData())) {
+            $data['ShippingAddress'] = array_replace($data['ShippingAddress'], $this->getShippingAddressData());
+        } elseif (is_array($this->getShippingAddressData())) {
+            $data['ShippingAddress'] = $this->getShippingAddressData();
+        }
+
+        if ($this->getPaymentInstrument()) {
+            $data['PaymentInstrument'] = $this->getPaymentInstrument();
         }
 
         return $data;
@@ -151,6 +255,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $data['Quantity'] = strval($item->getQuantity());
                 $cost = $this->formatCurrency($item->getPrice());
                 $data['UnitCost'] = strval($this->getCostInteger($cost));
+                $tax = $this->getItemParameter($item, 'tax');
+                if ($tax !== null) {
+                    $data['Tax'] = strval($this->getCostInteger($this->formatCurrency($tax)));
+                }
+                $total = $this->getItemParameter($item, 'total');
+                if ($total !== null) {
+                    $data['Total'] = strval($this->getCostInteger($this->formatCurrency($total)));
+                }
                 $itemArray[] = $data;
             }
         }
@@ -166,5 +278,72 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getEndpointBase()
     {
         return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
+    }
+
+    protected function createJsonHeaders()
+    {
+        $headers = [
+            'Authorization' => 'Basic ' . base64_encode($this->getApiKey() . ':' . $this->getPassword()),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+
+        if ($this->getApiVersion() !== null && $this->getApiVersion() !== '') {
+            $headers['X-EWAY-APIVERSION'] = (string) $this->getApiVersion();
+        }
+
+        return $headers;
+    }
+
+    protected function sendJsonRequest($method, $endpoint, array $data = [])
+    {
+        $body = $data ? json_encode($data) : null;
+
+        return $this->httpClient->request($method, $endpoint, $this->createJsonHeaders(), $body);
+    }
+
+    protected function decodeJsonResponse($httpResponse)
+    {
+        $data = json_decode((string) $httpResponse->getBody(), true);
+
+        return is_array($data) ? $data : [];
+    }
+
+    protected function normalizeCountryCode($country)
+    {
+        if ($country === null || $country === '') {
+            return null;
+        }
+
+        return strtolower((string) $country);
+    }
+
+    protected function getOptionsData()
+    {
+        $options = $this->getOptions();
+        if (!is_array($options)) {
+            return [];
+        }
+
+        return array_values(array_map(function ($option) {
+            if (is_array($option)) {
+                return $option;
+            }
+
+            return ['Value' => (string) $option];
+        }, $options));
+    }
+
+    protected function getItemParameter($item, $key)
+    {
+        if (method_exists($item, 'getParameter')) {
+            return $item->getParameter($key);
+        }
+
+        if ($item instanceof \ArrayAccess && isset($item[$key])) {
+            return $item[$key];
+        }
+
+        return null;
     }
 }

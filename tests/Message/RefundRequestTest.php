@@ -6,8 +6,10 @@ use Omnipay\Tests\TestCase;
 
 class RapidRefundRequestTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize([
             'apiKey' => 'my api key',
@@ -29,6 +31,7 @@ class RapidRefundRequestTest extends TestCase
             'description' => 'new car',
             'currency' => 'AUD',
             'invoiceReference' => 'INV-123',
+            'options' => ['Option1'],
             'clientIp' => '127.0.0.1',
             'card' => [
                 'firstName' => 'Patrick',
@@ -52,6 +55,7 @@ class RapidRefundRequestTest extends TestCase
         $this->assertSame('new car', $data['Refund']['InvoiceDescription']);
         $this->assertSame('INV-123', $data['Refund']['InvoiceReference']);
         $this->assertSame('AUD', $data['Refund']['CurrencyCode']);
+        $this->assertSame('Option1', $data['Options'][0]['Value']);
         $this->assertSame('Patrick', $data['Customer']['FirstName']);
         $this->assertSame('Collison', $data['Customer']['LastName']);
         $this->assertSame('John', $data['ShippingAddress']['FirstName']);

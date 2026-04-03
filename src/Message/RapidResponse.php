@@ -75,7 +75,15 @@ class RapidResponse extends AbstractResponse implements RedirectResponseInterfac
      */
     public function getTransactionId()
     {
-        return $this->data['InvoiceNumber'];
+        if (isset($this->data['InvoiceNumber'])) {
+            return $this->data['InvoiceNumber'];
+        }
+
+        if (isset($this->data['Payment']['InvoiceNumber'])) {
+            return $this->data['Payment']['InvoiceNumber'];
+        }
+
+        return null;
     }
 
     /**
@@ -88,6 +96,6 @@ class RapidResponse extends AbstractResponse implements RedirectResponseInterfac
      */
     public function getInvoiceNumber()
     {
-        return $this->data['InvoiceNumber'];
+        return $this->getTransactionId();
     }
 }

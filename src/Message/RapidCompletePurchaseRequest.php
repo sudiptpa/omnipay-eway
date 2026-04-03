@@ -14,11 +14,27 @@ class RapidCompletePurchaseRequest extends RapidPurchaseRequest
 {
     public function getData()
     {
-        return array('AccessCode' => $this->httpRequest->query->get('AccessCode'));
+        $accessCode = $this->getAccessCode();
+
+        if (!$accessCode) {
+            $accessCode = $this->httpRequest->query->get('AccessCode');
+        }
+
+        $this->setAccessCode($accessCode);
+        $this->validate('accessCode');
+
+        return ['AccessCode' => $accessCode];
+    }
+
+    public function sendData($data)
+    {
+        $httpResponse = $this->sendJsonRequest('GET', $this->getEndpoint());
+
+        return $this->response = new RapidResponse($this, $this->decodeJsonResponse($httpResponse));
     }
 
     protected function getEndpoint()
     {
-        return $this->getEndpointBase().'/GetAccessCodeResult.json';
+        return $this->getEndpointBase() . '/AccessCode/' . rawurlencode($this->getAccessCode());
     }
 }
