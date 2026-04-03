@@ -3,8 +3,10 @@
 **eWAY driver for the Omnipay PHP payment processing library**
 
 [![CI](https://github.com/thephpleague/omnipay-eway/actions/workflows/ci.yml/badge.svg)](https://github.com/thephpleague/omnipay-eway/actions/workflows/ci.yml)
-[![Latest Stable Version](https://poser.pugx.org/omnipay/eway/version.png)](https://packagist.org/packages/omnipay/eway)
-[![Total Downloads](https://poser.pugx.org/omnipay/eway/d/total.png)](https://packagist.org/packages/omnipay/eway)
+[![Latest Version](https://img.shields.io/packagist/v/omnipay/eway)](https://packagist.org/packages/omnipay/eway)
+[![Downloads](https://img.shields.io/packagist/dt/omnipay/eway)](https://packagist.org/packages/omnipay/eway)
+[![PHP Version](https://img.shields.io/packagist/php-v/omnipay/eway)](https://packagist.org/packages/omnipay/eway)
+[![License](https://img.shields.io/packagist/l/omnipay/eway)](https://packagist.org/packages/omnipay/eway)
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
 processing library for PHP 7.2+ and PHP 8.x. This package implements eWAY Rapid support for Omnipay 3.

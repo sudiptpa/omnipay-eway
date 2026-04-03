@@ -36,7 +36,6 @@ jobs:
 
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress
-
       - name: Run coding standards
         run: composer lint
 
