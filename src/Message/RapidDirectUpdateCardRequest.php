@@ -66,6 +66,7 @@ class RapidDirectUpdateCardRequest extends RapidDirectAbstractRequest
         $this->validate('cardReference');
 
         $data['Customer']['TokenCustomerID'] = $this->getCardReference();
+        $data['Payment']['TotalAmount'] = 0;
 
         $data['Method'] = 'UpdateTokenCustomer';
 
