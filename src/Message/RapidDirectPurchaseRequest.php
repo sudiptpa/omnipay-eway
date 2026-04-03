@@ -90,8 +90,17 @@ class RapidDirectPurchaseRequest extends RapidDirectAbstractRequest
         }
 
         if (empty($data['Customer']['CardDetails']['CVN']) && $this->getCardReference()) {
-            // We have a token and card is not present so treat as MOTO.
-            $data['TransactionType'] = 'MOTO';
+            // Token payments without CVN are allowed for merchant-initiated flows.
+            // Preserve an explicit Recurring/MOTO type and only default to MOTO
+            // when the caller did not provide a transaction type.
+            if ($this->getTransactionType() === 'Purchase') {
+                throw new \Omnipay\Common\Exception\InvalidRequestException(
+                    'A CVN is required for token purchases with transactionType Purchase.'
+                );
+            }
+            if (!$this->getTransactionType()) {
+                $data['TransactionType'] = 'MOTO';
+            }
         }
 
         if ($this->getCardReference()) {

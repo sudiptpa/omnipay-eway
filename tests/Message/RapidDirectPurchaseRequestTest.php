@@ -185,6 +185,48 @@ class RapidDirectPurchaseRequestTest extends TestCase
         $this->assertArrayNotHasKey('CardDetails', $data['Customer']);
     }
 
+    public function testGetDataWithSecuredCardDataAndCustomerOverrides()
+    {
+        $this->request->initialize([
+            'apiKey' => 'my api key',
+            'password' => 'secret',
+            'amount' => '10.00',
+            'currency' => 'AUD',
+            'transactionType' => 'Purchase',
+            'securedCardData' => '44DD7jYYyRgaQnVibOAsYbbFIYmSXbS6hmTxosAhG6CK1biw=',
+            'customerData' => [
+                'FirstName' => 'John',
+                'LastName' => 'Smith',
+            ],
+        ]);
+
+        $data = $this->request->getData();
+
+        $this->assertSame('John', $data['Customer']['FirstName']);
+        $this->assertSame('Smith', $data['Customer']['LastName']);
+        $this->assertSame('44DD7jYYyRgaQnVibOAsYbbFIYmSXbS6hmTxosAhG6CK1biw=', $data['SecuredCardData']);
+    }
+
+    public function testTokenPurchaseRequiresCvnForPurchaseTransactionType()
+    {
+        $this->request->initialize([
+            'apiKey' => 'my api key',
+            'password' => 'secret',
+            'transactionType' => 'Purchase',
+            'amount' => '10.00',
+            'transactionId' => '999',
+            'description' => 'new car',
+            'currency' => 'AUD',
+            'invoiceReference' => 'INV-123',
+            'cardReference' => '87654321',
+        ]);
+
+        $this->expectException('Omnipay\Common\Exception\InvalidRequestException');
+        $this->expectExceptionMessage('A CVN is required for token purchases with transactionType Purchase.');
+
+        $this->request->getData();
+    }
+
     public function testGetDataWithPaymentInstrument()
     {
         $paymentInstrument = [

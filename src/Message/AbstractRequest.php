@@ -228,7 +228,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
 
         if (is_array($this->getCustomerData())) {
-            $data['Customer'] = array_replace($data['Customer'], $this->getCustomerData());
+            $data['Customer'] = array_replace(isset($data['Customer']) ? $data['Customer'] : [], $this->getCustomerData());
         }
 
         if (isset($data['ShippingAddress']) && is_array($this->getShippingAddressData())) {
