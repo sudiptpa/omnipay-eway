@@ -23,36 +23,19 @@ composer require league/omnipay omnipay/eway
 
 The following gateways are provided by this package:
 
-* `Eway_Direct`: legacy XML API support. New integrations should avoid this gateway.
-* `Eway_RapidDirect`: direct card processing for PCI-compliant or encrypted-card flows.
-* `Eway_Rapid`: transparent redirect integration.
-* `Eway_RapidShared`: hosted shared payment page integration.
+* Eway_Direct -- This gateway is deprecated. If you have existing code that uses it you can continue
+  to do so but you should consider migrating to Eway_RapidDirect
+* Eway_RapidDirect -- This is the primary gateway used for direct card processing, i.e. where you collect the
+  card details from the customer and pass them to eWay yourself via the API.
+* Eway_Rapid -- This is used for eWAY Rapid Transparent Redirect requests. The gateway is just
+  called Eway_Rapid as it was the first implemented. Like other redirect gateways the purchase() call
+  will return a redirect response and then requires you to redirect the customer to the eWay site for
+  the actual purchase.
+* Eway_RapidShared -- This provides a hosted form for entering payment information, other than that
+  it is similar to the Eway_Rapid gateway in functionality.
 
-The Rapid gateways in this package use the current eWAY REST endpoints and support the optional `apiVersion`
-header documented by eWAY. If you want to pin the documented current API version explicitly:
-
-```php
-$gateway = Omnipay\Omnipay::create('Eway_RapidShared');
-$gateway->setApiKey('Rapid API Key');
-$gateway->setPassword('Rapid API Password');
-$gateway->setApiVersion('47');
-$gateway->setTestMode(true);
-```
-
-For shared-page flows, use `purchase()` to create the access code and redirect the customer, then
-call `completePurchase()` after eWAY redirects the customer back with `?AccessCode=...`.
-
-Supported shared-page options include:
-
-* `cancelUrl`
-* `logoUrl`
-* `headerText`
-* `footerText`
-* `language`
-* `customerReadOnly`
-* `customView`
-* `verifyCustomerPhone`
-* `verifyCustomerEmail`
+See the docblocks within the gateway classes for further information and links to the eWay gateway on
+line.
 
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
