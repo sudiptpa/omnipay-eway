@@ -52,7 +52,7 @@ class RapidDirectUpdateCardRequestTest extends TestCase
 
         $this->assertSame('UpdateTokenCustomer', $data['Method']);
         $this->assertSame('987654321', $data['Customer']['TokenCustomerID']);
-        $this->assertNull($data['Payment']['TotalAmount']);
+        $this->assertArrayNotHasKey('Payment', $data);
         $this->assertSame('Mr.', $data['Customer']['Title']);
         $this->assertSame('John', $data['Customer']['FirstName']);
         $this->assertSame('Smith', $data['Customer']['LastName']);
