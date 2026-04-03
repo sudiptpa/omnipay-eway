@@ -33,7 +33,6 @@
         }
     },
     "require": {
-        "php": "^7.2 || ^8.0",
         "omnipay/common": "^3"
     },
     "require-dev": {
