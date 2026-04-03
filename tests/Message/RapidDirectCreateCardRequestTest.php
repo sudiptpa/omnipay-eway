@@ -60,7 +60,7 @@ class RapidDirectCreateCardRequestTest extends TestCase
         $this->assertSame('127.0.0.1', $data['CustomerIP']);
         $this->assertSame('1234', $data['PartnerID']);
         $this->assertSame('NextDay', $data['ShippingMethod']);
-        $this->assertArrayNotHasKey('Payment', $data);
+        $this->assertSame(0, $data['Payment']['TotalAmount']);
         $this->assertSame('Mr.', $data['Customer']['Title']);
         $this->assertSame('John', $data['Customer']['FirstName']);
         $this->assertSame('Smith', $data['Customer']['LastName']);
@@ -70,6 +70,62 @@ class RapidDirectCreateCardRequestTest extends TestCase
         $this->assertSame('au', $data['ShippingAddress']['Country']);
         $this->assertSame('4111111111111111', $data['Customer']['CardDetails']['Number']);
         $this->assertSame('12', $data['Customer']['CardDetails']['ExpiryMonth']);
+    }
+
+    public function testSendPurchaseActionPassesThroughOriginalContext()
+    {
+        $this->request->initialize([
+            'apiKey' => 'my api key',
+            'password' => 'secret',
+            'apiVersion' => '47',
+            'partnerId' => '1234',
+            'transactionType' => 'Recurring',
+            'transactionId' => '999',
+            'description' => 'new car',
+            'currency' => 'AUD',
+            'invoiceReference' => 'INV-123',
+            'amount' => '10.00',
+            'deviceId' => 'device-123',
+            'capture' => false,
+            'saveCustomer' => true,
+            'options' => ['Option1'],
+            'customerData' => ['Reference' => 'customer-ref'],
+            'shippingAddressData' => ['City' => 'Sydney'],
+            'action' => 'Purchase',
+            'card' => [
+                'title' => 'Mr.',
+                'firstName' => 'John',
+                'lastName' => 'Smith',
+                'number' => '4111111111111111',
+                'expiryMonth' => '12',
+                'expiryYear' => gmdate('Y') + rand(1, 5),
+                'cvv' => rand(100, 999),
+            ],
+        ]);
+
+        $this->setMockHttpResponse([
+            'RapidDirectCreateCardRequestSuccess.txt',
+            'RapidDirectPurchaseRequestSuccess.txt',
+        ]);
+
+        $response = $this->request->send();
+        $purchaseResponse = $response->getPurchaseResponse();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertNotNull($purchaseResponse);
+        $this->assertTrue($purchaseResponse->isSuccessful());
+
+        $purchaseRequest = $purchaseResponse->getRequest();
+        $this->assertSame('47', $purchaseRequest->getApiVersion());
+        $this->assertSame('1234', $purchaseRequest->getPartnerId());
+        $this->assertSame('Recurring', $purchaseRequest->getTransactionType());
+        $this->assertSame('INV-123', $purchaseRequest->getInvoiceReference());
+        $this->assertSame('device-123', $purchaseRequest->getDeviceId());
+        $this->assertFalse($purchaseRequest->getCapture());
+        $this->assertTrue($purchaseRequest->getSaveCustomer());
+        $this->assertSame(['Option1'], $purchaseRequest->getOptions());
+        $this->assertSame(['Reference' => 'customer-ref'], $purchaseRequest->getCustomerData());
+        $this->assertSame(['City' => 'Sydney'], $purchaseRequest->getShippingAddressData());
     }
 
     /**

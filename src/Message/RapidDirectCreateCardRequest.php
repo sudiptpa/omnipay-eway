@@ -6,8 +6,6 @@
 
 namespace Omnipay\Eway\Message;
 
-use Omnipay\Omnipay;
-
 /**
  * eWAY Rapid Direct Create Card Request
  *
@@ -62,6 +60,7 @@ class RapidDirectCreateCardRequest extends RapidDirectAbstractRequest
     {
         $data = $this->getBaseData();
 
+        $data['Payment']['TotalAmount'] = 0;
         $data['Method'] = 'CreateTokenCustomer';
 
         return $data;
@@ -82,18 +81,30 @@ class RapidDirectCreateCardRequest extends RapidDirectAbstractRequest
         );
 
         if ($this->getAction() === 'Purchase' && $this->response->isSuccessful()) {
-            $purchaseGateway = Omnipay::create('Eway_RapidDirect');
-            $purchaseGateway->setApiKey($this->getApiKey());
-            $purchaseGateway->setPassword($this->getPassword());
-            $purchaseGateway->setTestMode($this->getTestMode());
-            $purchaseResponse = $purchaseGateway->purchase([
+            $purchaseRequest = new RapidDirectPurchaseRequest($this->httpClient, $this->httpRequest);
+            $purchaseRequest->initialize([
+                'apiKey' => $this->getApiKey(),
+                'password' => $this->getPassword(),
+                'apiVersion' => $this->getApiVersion(),
+                'testMode' => $this->getTestMode(),
                 'amount' => $this->getAmount(),
                 'currency' => $this->getCurrency(),
                 'description' => $this->getDescription(),
                 'transactionId' => $this->getTransactionId(),
+                'invoiceReference' => $this->getInvoiceReference(),
+                'partnerId' => $this->getPartnerId(),
+                'transactionType' => $this->getTransactionType(),
+                'deviceId' => $this->getDeviceId(),
+                'capture' => $this->getCapture(),
+                'saveCustomer' => $this->getSaveCustomer(),
+                'options' => $this->getOptions(),
+                'customerData' => $this->getCustomerData(),
+                'shippingAddressData' => $this->getShippingAddressData(),
+                'paymentInstrument' => $this->getPaymentInstrument(),
                 'card' => $this->getCard(),
                 'cardReference' => $this->response->getCardReference(),
-            ])->send();
+            ]);
+            $purchaseResponse = $purchaseRequest->send();
             $this->response->setPurchaseResponse($purchaseResponse);
         }
 
