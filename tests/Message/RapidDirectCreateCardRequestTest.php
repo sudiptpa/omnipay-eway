@@ -126,6 +126,10 @@ class RapidDirectCreateCardRequestTest extends TestCase
         $this->assertSame(['Option1'], $purchaseRequest->getOptions());
         $this->assertSame(['Reference' => 'customer-ref'], $purchaseRequest->getCustomerData());
         $this->assertSame(['City' => 'Sydney'], $purchaseRequest->getShippingAddressData());
+        $purchaseData = $purchaseRequest->getData();
+        $this->assertSame((string) $response->getCardReference(), (string) $purchaseData['Customer']['TokenCustomerID']);
+        $this->assertArrayNotHasKey('Number', $purchaseData['Customer']['CardDetails']);
+        $this->assertArrayNotHasKey('CVN', $purchaseData['Customer']['CardDetails']);
     }
 
     /**

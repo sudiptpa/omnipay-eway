@@ -95,6 +95,9 @@ class RapidDirectPurchaseRequest extends RapidDirectAbstractRequest
         }
 
         if ($this->getCardReference()) {
+            if (isset($data['Customer']['CardDetails'])) {
+                unset($data['Customer']['CardDetails']['Number'], $data['Customer']['CardDetails']['CVN']);
+            }
             $data['Method'] = 'TokenPayment';
         } else {
             $data['Method'] = 'ProcessPayment';

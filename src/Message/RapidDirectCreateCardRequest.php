@@ -82,6 +82,14 @@ class RapidDirectCreateCardRequest extends RapidDirectAbstractRequest
 
         if ($this->getAction() === 'Purchase' && $this->response->isSuccessful()) {
             $purchaseRequest = new RapidDirectPurchaseRequest($this->httpClient, $this->httpRequest);
+            $purchaseCard = $this->getCard();
+            if ($purchaseCard && method_exists($purchaseCard, 'replace')) {
+                $purchaseCard = $purchaseCard->replace([
+                    'number' => null,
+                    'cvv' => null,
+                ]);
+            }
+
             $purchaseRequest->initialize([
                 'apiKey' => $this->getApiKey(),
                 'password' => $this->getPassword(),
@@ -101,7 +109,7 @@ class RapidDirectCreateCardRequest extends RapidDirectAbstractRequest
                 'customerData' => $this->getCustomerData(),
                 'shippingAddressData' => $this->getShippingAddressData(),
                 'paymentInstrument' => $this->getPaymentInstrument(),
-                'card' => $this->getCard(),
+                'card' => $purchaseCard,
                 'cardReference' => $this->response->getCardReference(),
             ]);
             $purchaseResponse = $purchaseRequest->send();

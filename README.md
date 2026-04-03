@@ -48,7 +48,6 @@ repository.
 ```bash
 composer update
 composer lint
-composer analyse
 composer test
 ```
 
