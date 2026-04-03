@@ -43,6 +43,37 @@ line.
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
+### Hosted Checkout Example
+
+```php
+use Omnipay\Omnipay;
+
+$gateway = Omnipay::create('Eway_RapidShared');
+$gateway->initialize([
+    'apiKey' => 'Rapid API Key',
+    'password' => 'Rapid API Password',
+    'testMode' => true,
+]);
+
+$response = $gateway->purchase([
+    'amount' => '10.00',
+    'currency' => 'AUD',
+    'transactionType' => 'Purchase',
+    'returnUrl' => 'https://example.com/eway/return',
+    'cancelUrl' => 'https://example.com/eway/cancel',
+    'card' => [
+        'firstName' => 'Jane',
+        'lastName' => 'Citizen',
+        'email' => 'jane@example.com',
+        'country' => 'AU',
+    ],
+])->send();
+
+if ($response->isRedirect()) {
+    $response->redirect();
+}
+```
+
 ## Development
 
 ```bash
