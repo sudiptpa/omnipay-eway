@@ -126,8 +126,10 @@ class RapidDirectPurchaseRequestTest extends TestCase
             'currency' => 'AUD',
             'invoiceReference' => 'INV-123',
             'clientIp' => '127.0.0.1',
-            'encryptedCardNumber' => 'eCrypted:YVe4GMLMSxF5m1nixtBvVlmaLDgjI+ZYM5GHuX1XjlbRTnhe/khA2csWblJDqaQE9S4BV+y4Xnf61GmRDNC9yLBVduGFuigHJ8rk360m580fYOiHy+OaZpgpRvHPw==',
-            'encryptedCardCvv' => 'eCrypted:ZvEfRd1DHwJ7dYV59DZqoaCFujvK+26VKS9Tp3uGp5kVki8CHpy67WUaFqqDzjZ8C6e3+TUXtW6/rrXGYYIXMfbph4Uw+XyLja3MJzOGniULWJA5zt90wxRwpZeYGDNQ==',
+            'encryptedCardNumber' =>
+                'eCrypted:YVe4GMLMSxF5m1nixtBvVlmaLDgjI+ZYM5GHuX1XjlbRTnhe/khA2csWblJDqaQE9S4BV+y4Xnf61GmRDNC9yLBVduGFuigHJ8rk360m580fYOiHy+OaZpgpRvHPw==',
+            'encryptedCardCvv' =>
+                'eCrypted:ZvEfRd1DHwJ7dYV59DZqoaCFujvK+26VKS9Tp3uGp5kVki8CHpy67WUaFqqDzjZ8C6e3+TUXtW6/rrXGYYIXMfbph4Uw+XyLja3MJzOGniULWJA5zt90wxRwpZeYGDNQ==',
             'card' => [
                 'firstName' => 'John',
                 'lastName' => 'Smith',
@@ -152,8 +154,14 @@ class RapidDirectPurchaseRequestTest extends TestCase
         $this->assertSame('1234', $data['PartnerID']);
         $this->assertSame('Purchase', $data['TransactionType']);
         $this->assertSame('au', $data['ShippingAddress']['Country']);
-        $this->assertSame('eCrypted:YVe4GMLMSxF5m1nixtBvVlmaLDgjI+ZYM5GHuX1XjlbRTnhe/khA2csWblJDqaQE9S4BV+y4Xnf61GmRDNC9yLBVduGFuigHJ8rk360m580fYOiHy+OaZpgpRvHPw==', $data['Customer']['CardDetails']['Number']);
-        $this->assertSame('eCrypted:ZvEfRd1DHwJ7dYV59DZqoaCFujvK+26VKS9Tp3uGp5kVki8CHpy67WUaFqqDzjZ8C6e3+TUXtW6/rrXGYYIXMfbph4Uw+XyLja3MJzOGniULWJA5zt90wxRwpZeYGDNQ==', $data['Customer']['CardDetails']['CVN']);
+        $this->assertSame(
+            'eCrypted:YVe4GMLMSxF5m1nixtBvVlmaLDgjI+ZYM5GHuX1XjlbRTnhe/khA2csWblJDqaQE9S4BV+y4Xnf61GmRDNC9yLBVduGFuigHJ8rk360m580fYOiHy+OaZpgpRvHPw==',
+            $data['Customer']['CardDetails']['Number']
+        );
+        $this->assertSame(
+            'eCrypted:ZvEfRd1DHwJ7dYV59DZqoaCFujvK+26VKS9Tp3uGp5kVki8CHpy67WUaFqqDzjZ8C6e3+TUXtW6/rrXGYYIXMfbph4Uw+XyLja3MJzOGniULWJA5zt90wxRwpZeYGDNQ==',
+            $data['Customer']['CardDetails']['CVN']
+        );
         $this->assertSame('01', $data['Customer']['CardDetails']['StartMonth']);
         $this->assertSame('13', $data['Customer']['CardDetails']['StartYear']);
         $this->assertSame('1', $data['Customer']['CardDetails']['IssueNumber']);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * eWAY Rapid Direct Create Card Response
  */

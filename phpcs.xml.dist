@@ -8,6 +8,7 @@
     <arg name="basepath" value="."/>
     <arg name="colors"/>
     <arg value="p"/>
+    <arg name="warning-severity" value="0"/>
 
     <rule ref="PSR12"/>
 

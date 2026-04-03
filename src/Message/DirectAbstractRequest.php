@@ -10,7 +10,6 @@ use SimpleXMLElement;
  */
 abstract class DirectAbstractRequest extends AbstractRequest
 {
-
     public function sendData($data)
     {
         $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), [], $data->asXML());

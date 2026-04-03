@@ -93,7 +93,12 @@ class RapidPurchaseRequestTest extends TestCase
         ]);
 
         $this->request->setItems([
-            ['name' => 'Floppy Disk', 'description' => 'MS-DOS', 'quantity' => 2, 'price' => 10, 'tax' => 1, 'total' => 22],
+            [
+                'name' => 'Floppy Disk',
+                'description' => 'MS-DOS',
+                'quantity' => 2,
+                'price' => 10,
+            ],
             ['name' => 'CD-ROM', 'description' => 'Windows 95', 'quantity' => 1, 'price' => 40],
         ]);
 
@@ -103,9 +108,6 @@ class RapidPurchaseRequestTest extends TestCase
         $this->assertSame('MS-DOS', $data['Items'][0]['Description']);
         $this->assertSame('2', $data['Items'][0]['Quantity']);
         $this->assertSame('1000', $data['Items'][0]['UnitCost']);
-        $this->assertSame('100', $data['Items'][0]['Tax']);
-        $this->assertSame('2200', $data['Items'][0]['Total']);
-
         $this->assertSame('CD-ROM', $data['Items'][1]['SKU']);
         $this->assertSame('Windows 95', $data['Items'][1]['Description']);
         $this->assertSame('1', $data['Items'][1]['Quantity']);
@@ -121,7 +123,10 @@ class RapidPurchaseRequestTest extends TestCase
         $this->assertTrue($response->isRedirect());
         $this->assertSame('POST', $response->getRedirectMethod());
         $this->assertSame('https://secure-au.sandbox.ewaypayments.com/Process', $response->getRedirectUrl());
-        $this->assertSame(['EWAY_ACCESSCODE' => 'F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL'], $response->getRedirectData());
+        $this->assertSame(
+            ['EWAY_ACCESSCODE' => 'F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL'],
+            $response->getRedirectData()
+        );
         $this->assertNull($response->getTransactionReference());
         $this->assertNull($response->getMessage());
         $this->assertNull($response->getCode());

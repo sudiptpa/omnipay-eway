@@ -38,7 +38,7 @@ class DirectAuthorizeRequest extends DirectAbstractRequest
         $sxml->addChild('ewayCustomerFirstName', $card->getFirstName());
         $sxml->addChild('ewayCustomerLastName', $card->getLastName());
         $sxml->addChild('ewayCustomerEmail', $card->getEmail());
-        $sxml->addChild('ewayCustomerAddress', $card->getAddress1().' '.$card->getAddress2());
+        $sxml->addChild('ewayCustomerAddress', $card->getAddress1() . ' ' . $card->getAddress2());
         $sxml->addChild('ewayCustomerPostcode', $card->getPostCode());
 
         $sxml->addChild('ewayOption1', $this->getOption1());

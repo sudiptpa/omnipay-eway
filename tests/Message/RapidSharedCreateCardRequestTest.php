@@ -52,7 +52,10 @@ class RapidSharedCreateCardRequestTest extends TestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertSame('GET', $response->getRedirectMethod());
-        $this->assertSame('https://secure.ewaypayments.com/sharedpayment?AccessCode=F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL', $response->getRedirectUrl());
+        $this->assertSame(
+            'https://secure.ewaypayments.com/sharedpayment?AccessCode=F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL',
+            $response->getRedirectUrl()
+        );
         $this->assertNull($response->getRedirectData());
         $this->assertNull($response->getTransactionReference());
         $this->assertNull($response->getMessage());
@@ -121,5 +124,4 @@ class RapidSharedCreateCardRequestTest extends TestCase
         $this->assertSame($this->request, $this->request->setVerifyCustomerEmail('true'));
         $this->assertSame('true', $this->request->getVerifyCustomerEmail());
     }
-
 }

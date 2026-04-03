@@ -1,4 +1,5 @@
 <?php
+
 /**
  * eWAY Rapid Abstract Response
  */

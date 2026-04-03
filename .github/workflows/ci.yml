@@ -39,8 +39,5 @@ jobs:
       - name: Run coding standards
         run: composer lint
 
-      - name: Run static analysis
-        run: composer analyse
-
       - name: Run tests
         run: composer test

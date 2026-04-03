@@ -102,7 +102,10 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('10.00', $request->getAmount());
-        $this->assertSame('Error: This authorisation has already been completed. Your transaction could not be processed.', $response->getMessage());
+        $this->assertSame(
+            'Error: This authorisation has already been completed. Your transaction could not be processed.',
+            $response->getMessage()
+        );
     }
 
     public function testPurchaseSuccess()
@@ -167,7 +170,10 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('10.00', $request->getAmount());
-        $this->assertSame('Error: This transaction has already been refunded for its total amount. Your refund could not be processed.', $response->getMessage());
+        $this->assertSame(
+            'Error: This transaction has already been refunded for its total amount. Your refund could not be processed.',
+            $response->getMessage()
+        );
     }
 
     public function testVoidSuccess()
@@ -198,7 +204,9 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertNull($request->getAmount());
-        $this->assertSame('Error: This authorisation has already been voided. Your transaction could not be processed.', $response->getMessage());
+        $this->assertSame(
+            'Error: This authorisation has already been voided. Your transaction could not be processed.',
+            $response->getMessage()
+        );
     }
-
 }

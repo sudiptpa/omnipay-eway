@@ -1,4 +1,5 @@
 <?php
+
 /**
  * eWAY Legacy Direct XML Payments Gateway
  */

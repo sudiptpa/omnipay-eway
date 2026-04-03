@@ -16,7 +16,8 @@ class RapidCompletePurchaseRequestTest extends TestCase
             'password' => 'secret',
         ]);
         $this->getHttpRequest()->query->replace([
-            'AccessCode' => 'F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL',
+            'AccessCode' =>
+                'F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL',
         ]);
     }
 
@@ -24,7 +25,10 @@ class RapidCompletePurchaseRequestTest extends TestCase
     {
         $data = $this->request->getData();
 
-        $this->assertSame('F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL', $data['AccessCode']);
+        $this->assertSame(
+            'F9802j0-O7sdVLnOcb_3IPryTxHDtKY8u_0pb10GbYq-Xjvbc-5Bc_LhI-oBIrTxTCjhOFn7Mq-CwpkLDja5-iu-Dr3DjVTr9u4yxSB5BckdbJqSA4WWydzDO0jnPWfBdKcWL',
+            $data['AccessCode']
+        );
     }
 
     public function testSendSuccess()

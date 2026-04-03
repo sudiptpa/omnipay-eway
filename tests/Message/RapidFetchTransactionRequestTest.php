@@ -47,7 +47,10 @@ class RapidFetchTransactionRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertNull($response->getTransactionReference());
-        $this->assertSame('Invalid TransactionSearch,no TransactionID or AccessCode specified', $response->getMessage());
+        $this->assertSame(
+            'Invalid TransactionSearch,no TransactionID or AccessCode specified',
+            $response->getMessage()
+        );
         $this->assertSame('V6123', $response->getCode());
     }
 }

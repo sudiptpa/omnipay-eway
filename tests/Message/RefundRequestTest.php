@@ -116,7 +116,10 @@ class RapidRefundRequestTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertNull($response->getTransactionReference());
-        $this->assertSame('Unauthorised API Access, Account Not PCI Certified, Invalid Refund Transaction ID', $response->getMessage());
+        $this->assertSame(
+            'Unauthorised API Access, Account Not PCI Certified, Invalid Refund Transaction ID',
+            $response->getMessage()
+        );
         $this->assertSame('V6111,V6115', $response->getCode());
     }
 }

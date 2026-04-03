@@ -1,4 +1,5 @@
 <?php
+
 /**
  * eWAY Rapid Abstract Request
  */
@@ -336,8 +337,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     protected function getItemParameter($item, $key)
     {
-        if (method_exists($item, 'getParameter')) {
-            return $item->getParameter($key);
+        if (method_exists($item, 'getParameters')) {
+            $parameters = $item->getParameters();
+
+            return array_key_exists($key, $parameters) ? $parameters[$key] : null;
         }
 
         if ($item instanceof \ArrayAccess && isset($item[$key])) {
