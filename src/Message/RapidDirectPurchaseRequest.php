@@ -96,7 +96,19 @@ class RapidDirectPurchaseRequest extends RapidDirectAbstractRequest
 
         if ($this->getCardReference()) {
             if (isset($data['Customer']['CardDetails'])) {
-                unset($data['Customer']['CardDetails']['Number'], $data['Customer']['CardDetails']['CVN']);
+                // eWAY token payments should not resend full card details; only expiry month/year are allowed.
+                $data['Customer']['CardDetails'] = array_intersect_key(
+                    $data['Customer']['CardDetails'],
+                    [
+                        'ExpiryMonth' => true,
+                        'ExpiryYear' => true,
+                    ]
+                );
+
+                if ($data['Customer']['CardDetails'] === []) {
+                    // If there is no expiry to refresh, omit CardDetails entirely and rely on the token alone.
+                    unset($data['Customer']['CardDetails']);
+                }
             }
             $data['Method'] = 'TokenPayment';
         } else {

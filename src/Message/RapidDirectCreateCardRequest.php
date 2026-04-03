@@ -81,6 +81,8 @@ class RapidDirectCreateCardRequest extends RapidDirectAbstractRequest
         );
 
         if ($this->getAction() === 'Purchase' && $this->response->isSuccessful()) {
+            // Follow up with a token-backed purchase so the second request uses the
+            // newly created TokenCustomerID instead of reprocessing raw card data.
             $purchaseRequest = new RapidDirectPurchaseRequest($this->httpClient, $this->httpRequest);
             $purchaseCard = $this->getCard();
             if ($purchaseCard && method_exists($purchaseCard, 'replace')) {

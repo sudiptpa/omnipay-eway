@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/packagist/l/omnipay/eway)](https://packagist.org/packages/omnipay/eway)
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 7.2+ and PHP 8.x. This package implements eWAY Rapid support for Omnipay 3.
+processing library for PHP. This package implements eWAY Rapid support for Omnipay 3.
 
 [eWAY](https://www.eway.com.au/) was launched in Australia in 1998 and now operates payment gateways
 in 8 countries.
