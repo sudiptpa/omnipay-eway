@@ -284,11 +284,15 @@ class RapidDirectPurchaseRequestTest extends TestCase
         $this->assertSame('MS-DOS', $data['Items'][0]['Description']);
         $this->assertSame('2', $data['Items'][0]['Quantity']);
         $this->assertSame('1000', $data['Items'][0]['UnitCost']);
+        $this->assertSame('0', $data['Items'][0]['Tax']);
+        $this->assertSame('2000', $data['Items'][0]['Total']);
 
         $this->assertSame('CD-ROM', $data['Items'][1]['SKU']);
         $this->assertSame('Windows 95', $data['Items'][1]['Description']);
         $this->assertSame('1', $data['Items'][1]['Quantity']);
         $this->assertSame('4000', $data['Items'][1]['UnitCost']);
+        $this->assertSame('0', $data['Items'][1]['Tax']);
+        $this->assertSame('4000', $data['Items'][1]['Total']);
     }
 
     public function testSendSuccess()

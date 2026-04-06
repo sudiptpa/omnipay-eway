@@ -253,17 +253,19 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $data = array();
                 $data['SKU'] = strval($item->getName());
                 $data['Description'] = strval($item->getDescription());
-                $data['Quantity'] = strval($item->getQuantity());
+                $quantity = (int) $item->getQuantity();
+                $data['Quantity'] = strval($quantity);
                 $cost = $this->formatCurrency($item->getPrice());
-                $data['UnitCost'] = strval($this->getCostInteger($cost));
+                $unitCost = $this->getCostInteger($cost);
+                $data['UnitCost'] = strval($unitCost);
                 $tax = $this->getItemParameter($item, 'tax');
-                if ($tax !== null) {
-                    $data['Tax'] = strval($this->getCostInteger($this->formatCurrency($tax)));
-                }
+                $data['Tax'] = $tax !== null
+                    ? strval($this->getCostInteger($this->formatCurrency($tax)))
+                    : '0';
                 $total = $this->getItemParameter($item, 'total');
-                if ($total !== null) {
-                    $data['Total'] = strval($this->getCostInteger($this->formatCurrency($total)));
-                }
+                $data['Total'] = $total !== null
+                    ? strval($this->getCostInteger($this->formatCurrency($total)))
+                    : strval($unitCost * $quantity);
                 $itemArray[] = $data;
             }
         }
